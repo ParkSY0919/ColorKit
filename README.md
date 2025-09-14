@@ -1,2 +1,2 @@
-# FigmaColorKit
+# ColorKit
 🎨
