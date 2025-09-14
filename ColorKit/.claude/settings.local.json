@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(swift package:*)",
+      "Bash(swift build:*)",
+      "Bash(swift test)",
+      "Bash(.build/debug/ColorGenerator Resources/design-tokens .build/test-output)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(swift:*)",
+      "Bash(cp:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": []
+  }
+}
