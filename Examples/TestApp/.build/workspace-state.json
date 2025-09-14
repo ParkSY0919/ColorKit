@@ -1,0 +1,24 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "colorkit",
+          "kind" : "fileSystem",
+          "location" : "/Users/Git/ColorKit/ColorKit",
+          "name" : "ColorKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/Git/ColorKit/ColorKit"
+        },
+        "subpath" : "colorkit"
+      }
+    ]
+  },
+  "version" : 6
+}

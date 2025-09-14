@@ -1,0 +1,80 @@
+{
+  "Background": {
+    "primary": {
+      "$type": "color",
+      "$value": "#000000"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{gray.900}"
+    },
+    "tertiary": {
+      "$type": "color",
+      "$value": "{gray.800}"
+    }
+  },
+  "Text": {
+    "primary": {
+      "$type": "color",
+      "$value": "#FFFFFF"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{gray.300}"
+    },
+    "tertiary": {
+      "$type": "color",
+      "$value": "{gray.500}"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "{gray.900}"
+    }
+  },
+  "Brand": {
+    "primary": {
+      "$type": "color",
+      "$value": "{blue.500}"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{blue.400}"
+    },
+    "light": {
+      "$type": "color",
+      "$value": "{blue.900}"
+    }
+  },
+  "Status": {
+    "success": {
+      "$type": "color",
+      "$value": "{green.500}"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "#F59E0B"
+    },
+    "error": {
+      "$type": "color",
+      "$value": "{red.500}"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "{blue.400}"
+    }
+  },
+  "Border": {
+    "default": {
+      "$type": "color",
+      "$value": "{gray.700}"
+    },
+    "strong": {
+      "$type": "color",
+      "$value": "{gray.600}"
+    },
+    "focus": {
+      "$type": "color",
+      "$value": "{blue.400}"
+    }
+  }
+}
