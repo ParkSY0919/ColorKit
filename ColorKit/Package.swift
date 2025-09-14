@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,10 +22,7 @@ let package = Package(
     targets: [
         .target(
             name: "ColorKit",
-            dependencies: [],
-            plugins: [
-                "ColorKitPlugin"
-            ]
+            dependencies: []
         ),
         .executableTarget(
             name: "ColorGenerator",
@@ -35,7 +32,8 @@ let package = Package(
         .plugin(
             name: "ColorKitPlugin",
             capability: .buildTool(),
-            dependencies: ["ColorGenerator"]
+            dependencies: ["ColorGenerator"],
+            path: "Plugins/ColorKitPlugin"
         ),
         .testTarget(
             name: "ColorKitTests",

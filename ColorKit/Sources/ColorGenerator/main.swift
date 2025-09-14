@@ -252,7 +252,6 @@ enum ColorGeneratorError: Error, LocalizedError {
 }
 
 // MARK: - Main Entry Point
-@main
 struct ColorGenerator {
     static func main() {
         let args = CommandLine.arguments
