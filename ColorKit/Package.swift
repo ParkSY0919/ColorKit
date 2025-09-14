@@ -14,22 +14,28 @@ let package = Package(
             name: "ColorKit",
             targets: ["ColorKit"]
         ),
+        .plugin(
+            name: "ColorKitPlugin",
+            targets: ["ColorKitPlugin"]
+        ),
     ],
     targets: [
         .target(
             name: "ColorKit",
             dependencies: [],
-            resources: [
-                .process("Resources")
-            ],
             plugins: [
                 "ColorKitPlugin"
             ]
         ),
+        .executableTarget(
+            name: "ColorGenerator",
+            dependencies: [],
+            path: "Sources/ColorGenerator"
+        ),
         .plugin(
             name: "ColorKitPlugin",
             capability: .buildTool(),
-            dependencies: []
+            dependencies: ["ColorGenerator"]
         ),
         .testTarget(
             name: "ColorKitTests",
