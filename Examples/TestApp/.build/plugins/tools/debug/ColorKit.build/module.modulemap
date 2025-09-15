@@ -1,4 +1,0 @@
-module ColorKit {
-    header "/Users/Git/ColorKit/ColorKit/Examples/TestApp/.build/plugins/tools/debug/ColorKit.build/ColorKit-Swift.h"
-    requires objc
-}

@@ -22,6 +22,7 @@ extension UIColor {
     }
 }
 
+@available(iOS 14.0, *)
 extension Colors {
     /// UIKit에서 사용할 수 있는 UIColor
     /// 자동으로 Light/Dark 모드를 지원합니다
@@ -32,7 +33,7 @@ extension Colors {
         }
         
         return UIColor { traits in
-            let hex = (traits.userInterfaceStyle == .dark) ? theme.dark : theme.light
+            let hex = traits.userInterfaceStyle == .dark ? theme.dark : theme.light
             return UIColor(hex: hex)
         }
     }

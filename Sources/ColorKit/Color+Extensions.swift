@@ -4,7 +4,7 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(iOS 14.0, macOS 11.0, *)
 extension Colors {
     /// SwiftUI에서 사용할 수 있는 Color
     /// 자동으로 Light/Dark 모드를 지원합니다
@@ -26,7 +26,7 @@ extension Colors {
     }
 }
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(iOS 14.0, macOS 11.0, *)
 extension Color {
     public init(hex: String) {
         let cleaned = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -46,13 +46,9 @@ extension Color {
     
     public init(light: Color, dark: Color) {
         #if canImport(UIKit)
+        // iOS 14.0+에서 더 효율적인 방법 사용
         self.init(UIColor { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor(dark)
-            default:
-                return UIColor(light)
-            }
+            traits.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
         })
         #else
         // For macOS without UIKit, use basic color (no dynamic switching)

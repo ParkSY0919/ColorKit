@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "ColorKit",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v10_15)
+        .iOS(.v14),
+        .macOS(.v11)
     ],
     products: [
         .library(
