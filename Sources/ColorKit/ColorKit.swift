@@ -1,5 +1,5 @@
 // ColorKit.swift
-// Main ColorKit interface
+// Main ColorKit interface with both legacy and dynamic color support
 
 import Foundation
 
@@ -11,10 +11,26 @@ public final class ColorKit {
     public static let shared = ColorKit()
     
     private var colorProvider: ColorProvider?
+    internal var dynamicProvider: DynamicColorProvider?
     
     private init() {}
     
-    /// Configure ColorKit with a color provider and mapping set
+    /// Configure ColorKit with simplified setup - just provide JSON file name
+    /// This automatically discovers all colors without requiring mapping configuration
+    /// - Parameter jsonFileName: Name of the JSON file (without extension) in the app bundle
+    public static func configure(jsonFileName: String = "app-colors") {
+        let dynamicProvider = DynamicColorProvider(jsonFileName: jsonFileName)
+        shared.dynamicProvider = dynamicProvider
+        
+        do {
+            try dynamicProvider.loadColors()
+            print("✅ ColorKit: Auto-discovered \(dynamicProvider.colorCount) colors from '\(jsonFileName).json'")
+        } catch {
+            print("❌ ColorKit: Failed to load colors - \(error.localizedDescription)")
+        }
+    }
+    
+    /// Configure ColorKit with a color provider and mapping set (legacy support)
     /// Call this during app startup to set up color loading
     /// - Parameters:
     ///   - mappingSet: Configuration that maps JSON color names to standard ColorRole
@@ -47,11 +63,33 @@ public final class ColorKit {
     public static func validateSetup() {
         print("🎨 ColorKit Setup Validation:")
         
+        // Check dynamic provider first (new system)
+        if let dynamicProvider = shared.dynamicProvider {
+            print("   Mode: Dynamic (auto-discovery)")
+            print("   Colors loaded: \(dynamicProvider.colorCount)")
+            print("   Status: \(dynamicProvider.isReady ? "✅ Ready" : "❌ Failed")")
+            
+            if let error = dynamicProvider.error {
+                print("   Error: \(error)")
+            }
+            
+            if dynamicProvider.isReady {
+                print("   Categories: \(dynamicProvider.discoveryResult?.categories.joined(separator: ", ") ?? "none")")
+                print("   Sample colors:")
+                for (name, theme) in Array(dynamicProvider.allColors.prefix(3)) {
+                    print("     - \(name): \(theme.light) / \(theme.dark)")
+                }
+            }
+            return
+        }
+        
+        // Fall back to legacy provider
         guard let provider = shared.colorProvider else {
             print("   Status: ❌ Not configured - call ColorKit.configure() first")
             return
         }
         
+        print("   Mode: Legacy (mapping-based)")
         print("   Colors loaded: \(provider.allColorThemes.count)")
         print("   Status: \(provider.isReady ? "✅ Ready" : "❌ Failed")")
         
@@ -84,11 +122,132 @@ public final class ColorKit {
     
     /// Check if ColorKit is properly loaded
     public static var isReady: Bool {
+        if let dynamicProvider = shared.dynamicProvider {
+            return dynamicProvider.isReady
+        }
         return shared.colorProvider?.isReady ?? false
     }
     
     /// Get setup error if any
     public static var setupError: String? {
+        if let dynamicProvider = shared.dynamicProvider {
+            return dynamicProvider.error
+        }
         return shared.colorProvider?.error
+    }
+    
+    /// Get total color count
+    public static var totalColorCount: Int {
+        if let dynamicProvider = shared.dynamicProvider {
+            return dynamicProvider.colorCount
+        }
+        return shared.colorProvider?.allColorThemes.count ?? 0
+    }
+    
+    /// Print all available colors for debugging
+    public static func printAllColors() {
+        print("🎨 All Available Colors:")
+        
+        if let dynamicProvider = shared.dynamicProvider {
+            print("   Dynamic Mode - \(dynamicProvider.colorCount) colors found:")
+            for (name, theme) in dynamicProvider.allColors.sorted(by: { $0.key < $1.key }) {
+                print("     \(name): \(theme.light) → \(theme.dark)")
+            }
+            
+            if let result = dynamicProvider.discoveryResult {
+                print("\n   Property Names:")
+                for (propName, jsonKey) in result.propertyMappings.sorted(by: { $0.key < $1.key }) {
+                    print("     .\(propName) → \"\(jsonKey)\"")
+                }
+            }
+        } else if let provider = shared.colorProvider {
+            print("   Legacy Mode - \(provider.allColorThemes.count) colors found:")
+            for (role, theme) in provider.allColorThemes.sorted(by: { $0.key.rawValue < $1.key.rawValue }) {
+                print("     \(role.rawValue): \(theme.light) → \(theme.dark)")
+            }
+        } else {
+            print("   ❌ No colors loaded - call ColorKit.configure() first")
+        }
+    }
+}
+
+// MARK: - Dynamic Color Provider
+
+/// Provider that automatically discovers colors from JSON without requiring mappings
+internal class DynamicColorProvider {
+    private let jsonFileName: String
+    private(set) var allColors: [String: ColorTheme] = [:]
+    private(set) var discoveryResult: ColorDiscoveryResult?
+    private(set) var loadError: String?
+    
+    init(jsonFileName: String) {
+        self.jsonFileName = jsonFileName
+    }
+    
+    func loadColors() throws {
+        allColors.removeAll()
+        discoveryResult = nil
+        loadError = nil
+        
+        guard let bundle = Bundle.main.path(forResource: jsonFileName, ofType: "json") else {
+            let error = "JSON file '\(jsonFileName).json' not found in app bundle"
+            loadError = error
+            throw ColorProviderError.fileNotFound(error)
+        }
+        
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: bundle))
+            let discoveredColors = try FlexibleJSONParser.parseColors(from: data)
+            
+            guard !discoveredColors.isEmpty else {
+                let error = "No valid colors found in JSON file"
+                loadError = error
+                throw FlexibleParserError.noColorsFound
+            }
+            
+            allColors = discoveredColors
+            discoveryResult = DynamicColorDiscovery.organizeColors(discoveredColors)
+            
+        } catch {
+            let errorMessage = "Failed to load or parse JSON: \(error.localizedDescription)"
+            loadError = errorMessage
+            throw ColorProviderError.loadingFailed(errorMessage)
+        }
+    }
+    
+    func colorTheme(forKey jsonKey: String) -> ColorTheme? {
+        return allColors[jsonKey]
+    }
+    
+    func colorTheme(forProperty propertyName: String) -> ColorTheme? {
+        guard let result = discoveryResult,
+              let jsonKey = result.propertyMappings[propertyName] else {
+            return nil
+        }
+        return allColors[jsonKey]
+    }
+    
+    var allColorNames: [String] {
+        return Array(allColors.keys).sorted()
+    }
+    
+    var allPropertyNames: [String] {
+        return Array(discoveryResult?.propertyMappings.keys ?? []).sorted()
+    }
+    
+    var colorsByCategory: [String: [String: ColorTheme]] {
+        return discoveryResult?.categorizedColors ?? [:]
+    }
+    
+    var isReady: Bool {
+        return !allColors.isEmpty && loadError == nil
+    }
+    
+    var error: String? {
+        return loadError
+    }
+    
+    var colorCount: Int {
+        return allColors.count
     }
 }
