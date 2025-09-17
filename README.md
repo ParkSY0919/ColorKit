@@ -1,21 +1,32 @@
-# ColorKit.
+# ColorKit 🎨
 
-A Swift Package that automatically generates type-safe color enums from Figma design tokens, providing seamless light/dark mode support without manual Asset Catalog management.
+[![Swift 5.5+](https://img.shields.io/badge/Swift-5.5+-orange.svg)](https://swift.org)
+[![iOS 13+](https://img.shields.io/badge/iOS-13+-blue.svg)](https://developer.apple.com/ios/)
+[![macOS 11+](https://img.shields.io/badge/macOS-11+-blue.svg)](https://developer.apple.com/macos/)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+**ColorKit** is a powerful, flexible Swift package that automatically discovers and manages colors from JSON design tokens. No configuration required - just drop in your JSON file and start using colors with full type safety and automatic dark mode support.
 
-- 🎨 **Automatic Code Generation**: Generates Swift color enums from Figma JSON exports
-- 🌓 **Light/Dark Mode**: Built-in support for light and dark themes
-- 📱 **Cross-Platform**: Works with both UIKit and SwiftUI
-- 🔗 **Color References**: Supports primitive color references like `{blue.500}`
-- 🚀 **Build-Time Generation**: Colors are generated at build time via Swift Package Manager plugins
-- ⚡ **Type Safety**: Compile-time color validation with enum cases
+[한국어 README](README_KR.md) | [English README](README.md)
 
-## Installation
+---
 
-### Swift Package Manager
+## ✨ Key Features
 
-Add ColorKit to your `Package.swift`:
+- **🚀 Zero Configuration**: Just add your JSON file - no mapping setup required
+- **🎯 Multiple Access Patterns**: Property-based, subscript, or string-based access
+- **🌙 Automatic Dark Mode**: Built-in light/dark theme support
+- **📱 SwiftUI & UIKit**: Full support for both frameworks
+- **🔍 Smart Discovery**: Automatically finds and converts any JSON color structure
+- **⚡ Type Safety**: Compile-time safety with IDE autocompletion
+- **🎨 Flexible JSON Support**: Works with Figma exports, custom tokens, nested structures
+
+## 🚀 Quick Start
+
+### 1. Install ColorKit
+
+Add ColorKit to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
@@ -23,122 +34,44 @@ dependencies: [
 ]
 ```
 
-Or add it via Xcode:
-1. **File → Add Package Dependencies**
-2. Enter URL: `https://github.com/ParkSY0919/ColorKit.git`
+### 2. Add Your Colors JSON
 
-## Usage
+Create a JSON file in your app bundle (e.g., `Resources/app-colors.json`):
 
-### 1. Setup Design Tokens
-
-Create a `Resources/design-tokens/` folder in your project and add your Figma-exported JSON files:
-
-```
-YourProject/
-├── Sources/
-│   └── YourApp/
-│       └── Resources/
-│           └── design-tokens/
-│               ├── light.tokens.json
-│               ├── dark.tokens.json
-│               └── primitive.tokens.json
-```
-
-### 2. JSON File Format
-
-**primitive.tokens.json** (Base color palette):
 ```json
 {
-  "blue": {
-    "500": {
-      "$type": "color",
-      "$value": "#3B82F6"
-    }
-  },
-  "gray": {
-    "900": {
-      "$type": "color", 
-      "$value": "#111827"
-    }
-  }
+  "brand-primary": "#007AFF",
+  "brand-secondary": "#5856D6", 
+  "text-heading": "#000000",
+  "text-body": "#333333",
+  "background-main": "#FFFFFF",
+  "success-green": "#34C759",
+  "error-red": "#FF3B30"
 }
 ```
 
-**light.tokens.json** (Light theme colors):
-```json
-{
-  "Background": {
-    "primary": {
-      "$type": "color",
-      "$value": "#FFFFFF"
-    }
-  },
-  "Text": {
-    "primary": {
-      "$type": "color",
-      "$value": "{gray.900}"
-    }
-  },
-  "Brand": {
-    "primary": {
-      "$type": "color",
-      "$value": "{blue.500}"
-    }
-  }
-}
-```
+### 3. Configure ColorKit
 
-**dark.tokens.json** (Dark theme colors):
-```json
-{
-  "Background": {
-    "primary": {
-      "$type": "color",
-      "$value": "#000000"
-    }
-  },
-  "Text": {
-    "primary": {
-      "$type": "color",
-      "$value": "#FFFFFF"
-    }
-  },
-  "Brand": {
-    "primary": {
-      "$type": "color",
-      "$value": "{blue.500}"
-    }
-  }
-}
-```
-
-### 3. Using Colors in UIKit
+In your App file or early in app lifecycle:
 
 ```swift
-import UIKit
 import ColorKit
 
-class ViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Validate ColorKit setup (optional, recommended for debugging)
-        ColorKit.validateSetup()
-        
-        // Use generated colors
-        view.backgroundColor = Colors.background_primary.uiColor
-        
-        let label = UILabel()
-        label.textColor = Colors.text_primary.uiColor
-        
-        let button = UIButton()
-        button.backgroundColor = Colors.brand_primary.uiColor
-        button.setTitleColor = Colors.text_primary.uiColor
+@main
+struct MyApp: App {
+    init() {
+        ColorKit.configure(jsonFileName: "app-colors")
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
     }
 }
 ```
 
-### 4. Using Colors in SwiftUI
+### 4. Use Colors Everywhere
 
 ```swift
 import SwiftUI
@@ -146,132 +79,268 @@ import ColorKit
 
 struct ContentView: View {
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Welcome to ColorKit!")
-                .foregroundColor(Colors.text_primary.color)
+        VStack {
+            Text("Welcome!")
+                .foregroundColor(Colors.brandPrimary.color)
+                .background(Colors.backgroundMain.color)
             
-            Button("Get Started") {
+            Button("Success") {
                 // Action
             }
-            .foregroundColor(Colors.text_primary.color)
-            .padding()
-            .background(Colors.brand_primary.color)
-            .cornerRadius(8)
+            .foregroundColor(Colors.successGreen.color)
         }
-        .padding()
-        .background(Colors.background_primary.color)
     }
 }
 ```
 
-### 5. Advanced Usage
+## 🎯 Multiple Access Patterns
+
+ColorKit provides four different ways to access your colors:
+
+### 1. Property-Style Access (Recommended)
+```swift
+Colors.brandPrimary.color        // SwiftUI Color
+Colors.brandPrimary.uiColor      // UIColor
+Colors.textHeading.color
+Colors.backgroundMain.color
+```
+
+### 2. Subscript Access
+```swift
+Colors["brand-primary"]?.color
+Colors["text-heading"]?.uiColor
+```
+
+### 3. String-Based Access
+```swift
+Colors.color(named: "brand-primary")?.color
+Colors.swiftUIColor(named: "success-green")
+Colors.uiColor(named: "error-red")
+```
+
+### 4. Semantic Grouping (Auto-Generated)
+```swift
+Colors.Brand.main.color          // If "app-brand-main" exists
+Colors.Text.heading.color        // If "app-text-heading" exists
+Colors.State.success.color       // If "app-state-success" exists
+```
+
+## 🎨 Supported JSON Structures
+
+ColorKit automatically handles various JSON color formats:
+
+### Simple Key-Value
+```json
+{
+  "primary": "#007AFF",
+  "secondary": "#5856D6"
+}
+```
+
+### Nested Objects
+```json
+{
+  "brand": {
+    "primary": "#007AFF",
+    "secondary": "#5856D6"
+  },
+  "text": {
+    "heading": "#000000",
+    "body": "#333333"
+  }
+}
+```
+
+### Figma Design Tokens
+```json
+{
+  "color": {
+    "brand": {
+      "primary": {
+        "500": {
+          "value": "#007AFF",
+          "type": "color"
+        }
+      }
+    }
+  }
+}
+```
+
+### Array Format
+```json
+[
+  {
+    "name": "brand-primary",
+    "value": "#007AFF"
+  },
+  {
+    "name": "text-heading", 
+    "value": "#000000"
+  }
+]
+```
+
+## 🌙 Dark Mode Support
+
+ColorKit automatically supports light and dark themes:
+
+### Automatic Theme JSON Structure
+```json
+{
+  "background-main": {
+    "light": "#FFFFFF",
+    "dark": "#000000"
+  },
+  "text-primary": {
+    "light": "#000000", 
+    "dark": "#FFFFFF"
+  }
+}
+```
+
+### Single Color (Used for Both Themes)
+```json
+{
+  "brand-primary": "#007AFF"  // Same color for light/dark
+}
+```
+
+Colors automatically adapt to the current interface style:
 
 ```swift
-import ColorKit
+// Automatically shows correct color for current theme
+Text("Hello")
+    .foregroundColor(Colors.textPrimary.color)
+```
 
-// Access color themes programmatically
-if let theme = ColorKit.theme(for: .brand_primary) {
-    print("Light: \\(theme.light)")  // #3B82F6
-    print("Dark: \\(theme.dark)")    // #3B82F6
-}
+## 🔧 Advanced Usage
 
+### Color Discovery and Introspection
+
+```swift
 // Get all available colors
-print("Total colors: \\(ColorKit.colorCount)")
+let allColors = Colors.allColorNames
+print("Available colors: \(allColors)")
 
+// Search colors
+let brandColors = Colors.searchColors(containing: "brand")
+print("Brand colors: \(brandColors)")
+
+// Get colors by category
+let colorsByCategory = Colors.colorsByCategory
+```
+
+### Validation and Debugging
+
+```swift
 // Validate setup
 ColorKit.validateSetup()
 
-// Check if ready
+// Print all colors for debugging  
+ColorKit.printAllColors()
+
+// Check if ColorKit is ready
 if ColorKit.isReady {
-    print("ColorKit is ready with \\(ColorKit.colorCount) colors")
+    print("✅ ColorKit loaded \(ColorKit.totalColorCount) colors")
+} else {
+    print("❌ ColorKit setup failed: \(ColorKit.setupError ?? "Unknown error")")
 }
 ```
 
-## Generated Code
+### Legacy Mapping Support (Optional)
 
-ColorKit automatically generates two files during build:
+For advanced use cases, you can still use the mapping system:
 
-**Colors.swift**:
 ```swift
-public enum Colors: String, CaseIterable {
-    case background_primary
-    case text_primary
-    case brand_primary
-    // ... more colors
-}
+let mappings = ColorMappingSet([
+    ColorMapping(jsonColorName: "brand-primary", role: .primary),
+    ColorMapping(jsonColorName: "success-green", role: .success)
+])
+
+ColorKit.configure(with: mappings, jsonFileName: "app-colors")
+
+// Access via roles
+AppColors.primary.color
+AppColors.success.color
 ```
 
-**ColorThemes.swift** (Internal):
+## 🏗️ Integration Examples
+
+### SwiftUI Example
 ```swift
-internal struct ColorThemes {
-    static let data: Data? = \"\"\"
-    {
-      "background_primary": {"light": "#FFFFFF", "dark": "#000000"},
-      "text_primary": {"light": "#111827", "dark": "#FFFFFF"}
+struct MyView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Title")
+                .foregroundColor(Colors.textHeading.color)
+                .font(.title)
+            
+            Text("Subtitle") 
+                .foregroundColor(Colors.textBody.color)
+                .font(.body)
+                
+            Button("Action") {
+                // Handle action
+            }
+            .foregroundColor(.white)
+            .background(Colors.brandPrimary.color)
+            .cornerRadius(8)
+        }
+        .padding()
+        .background(Colors.backgroundMain.color)
     }
-    \"\"\".data(using: .utf8)
 }
 ```
 
-## Color Extensions
-
-ColorKit adds convenient extensions to access colors:
-
+### UIKit Example
 ```swift
-// UIKit
-let uiColor: UIColor = Colors.brand_primary.uiColor
-
-// SwiftUI  
-let color: Color = Colors.brand_primary.color
+class MyViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = Colors.backgroundMain.uiColor
+        
+        let titleLabel = UILabel()
+        titleLabel.textColor = Colors.textHeading.uiColor
+        titleLabel.text = "Welcome"
+        
+        let button = UIButton()
+        button.setTitleColor(.white, for: .normal) 
+        button.backgroundColor = Colors.brandPrimary.uiColor
+        button.setTitle("Get Started", for: .normal)
+        
+        // Add to view hierarchy...
+    }
+}
 ```
 
-Both automatically handle light/dark mode switching.
+## 📋 Requirements
 
-## Build Process
+- iOS 13.0+ / macOS 11.0+
+- Swift 5.5+
+- Xcode 13.0+
 
-1. **JSON Parsing**: Reads design token files at build time
-2. **Reference Resolution**: Resolves `{primitive.color}` references
-3. **Theme Merging**: Combines light/dark variants
-4. **Code Generation**: Creates Swift enum and theme data
-5. **Integration**: Files are included in your app bundle
+## 🤝 Contributing
 
-## Troubleshooting
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Colors Not Loading
-```swift
-// Add to app startup
-ColorKit.validateSetup()
-```
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Build Issues
-1. Ensure `design-tokens` folder is in correct location
-2. Verify JSON file format matches examples
-3. Run **Product → Clean Build Folder** in Xcode
+## 📄 License
 
-### Missing Colors
-- Check JSON file syntax
-- Ensure `$type: "color"` is present
-- Verify primitive color references exist
+ColorKit is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
-## JSON Requirements
+## 🙋‍♂️ Support
 
-- Files must be valid JSON
-- Color objects need `$type: "color"` and `$value` fields
-- References use `{category.variant}` format
-- Nested objects become underscore-separated names (`Background.primary` → `background_primary`)
-
-## License
-
-MIT License - see LICENSE file for details.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+- 📖 [Documentation](https://github.com/ParkSY0919/ColorKit/wiki)
+- 🐛 [Issue Tracker](https://github.com/ParkSY0919/ColorKit/issues)
+- 💬 [Discussions](https://github.com/ParkSY0919/ColorKit/discussions)
 
 ---
 
-Built with ❤️ for better iOS design token management.
+Made with ❤️ by [ParkSY0919](https://github.com/ParkSY0919)
