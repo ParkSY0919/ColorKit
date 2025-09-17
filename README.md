@@ -1,4 +1,4 @@
-# ColorKit
+# ColorKit.
 
 A Swift Package that automatically generates type-safe color enums from Figma design tokens, providing seamless light/dark mode support without manual Asset Catalog management.
 
