@@ -6,7 +6,7 @@
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**ColorKit** is a powerful, flexible Swift package that automatically discovers and manages colors from JSON design tokens. No configuration required - just drop in your JSON file and start using colors with full type safety and automatic dark mode support.
+**ColorKit** is a powerful, flexible Swift package that automatically discovers and manages colors from JSON design tokens. **Works with any color naming scheme** - whether your colors are named `bg1`, `background-primary`, `Background.primary`, or anything else. No configuration required - just drop in your JSON file and start using colors with full type safety and automatic dark mode support.
 
 [한국어 README](README_KR.md) | [English README](README.md)
 
@@ -18,7 +18,7 @@
 - **🎯 Multiple Access Patterns**: Property-based, subscript, or string-based access
 - **🌙 Automatic Dark Mode**: Built-in light/dark theme support
 - **📱 SwiftUI & UIKit**: Full support for both frameworks
-- **🔍 Smart Discovery**: Automatically finds and converts any JSON color structure
+- **🔍 Smart Discovery**: Works with ANY color naming - `bg1`, `primaryColor`, `Brand.main`, etc.
 - **⚡ Type Safety**: Compile-time safety with IDE autocompletion
 - **🎨 Flexible JSON Support**: Works with Figma exports, custom tokens, nested structures
 
@@ -36,17 +36,33 @@ dependencies: [
 
 ### 2. Add Your Colors JSON
 
-Create a JSON file in your app bundle (e.g., `Resources/app-colors.json`):
+ColorKit works with any JSON color structure! Here are some examples:
 
+**Simple format:**
 ```json
 {
-  "brand-primary": "#007AFF",
-  "brand-secondary": "#5856D6", 
-  "text-heading": "#000000",
-  "text-body": "#333333",
-  "background-main": "#FFFFFF",
-  "success-green": "#34C759",
-  "error-red": "#FF3B30"
+  "bg1": "#FFFFFF",
+  "bg2": "#F5F5F5", 
+  "text1": "#000000",
+  "text2": "#666666",
+  "accent": "#007AFF"
+}
+```
+
+**Nested structure (like Figma exports):**
+```json
+{
+  "Background": {
+    "primary": "#FFFFFF",
+    "secondary": "#F5F5F5"
+  },
+  "Text": {
+    "primary": "#000000",
+    "secondary": "#666666"
+  },
+  "Brand": {
+    "primary": "#007AFF"
+  }
 }
 ```
 
@@ -60,7 +76,8 @@ import ColorKit
 @main
 struct MyApp: App {
     init() {
-        ColorKit.configure(jsonFileName: "app-colors")
+        // Works with any JSON file name
+        ColorKit.configure(jsonFileName: "your-colors") // or "design-tokens", "figma-export", etc.
     }
     
     var body: some Scene {
@@ -73,6 +90,8 @@ struct MyApp: App {
 
 ### 4. Use Colors Everywhere
 
+ColorKit automatically converts your JSON color names to Swift properties:
+
 ```swift
 import SwiftUI
 import ColorKit
@@ -81,16 +100,24 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Text("Welcome!")
-                .foregroundColor(Colors.brandPrimary.color)
-                .background(Colors.backgroundMain.color)
+                .foregroundColor(Colors.backgroundPrimary.color)  // from "Background.primary"
+                .background(Colors.textPrimary.color)             // from "Text.primary"
             
-            Button("Success") {
+            Button("Get Started") {
                 // Action
             }
-            .foregroundColor(Colors.successGreen.color)
+            .foregroundColor(Colors.brandPrimary.color)           // from "Brand.primary"
         }
+        .background(Colors.backgroundSecondary.color)             // from "Background.secondary"
     }
 }
+```
+
+**For simple naming (like "bg1", "bg2"):**
+```swift
+Text("Hello")
+    .foregroundColor(Colors.bg1.color)      // from "bg1"
+    .background(Colors.text1.color)         // from "text1"
 ```
 
 ## 🎯 Multiple Access Patterns
@@ -99,41 +126,51 @@ ColorKit provides four different ways to access your colors:
 
 ### 1. Property-Style Access (Recommended)
 ```swift
-Colors.brandPrimary.color        // SwiftUI Color
-Colors.brandPrimary.uiColor      // UIColor
-Colors.textHeading.color
-Colors.backgroundMain.color
+// ColorKit automatically generates properties from your JSON:
+Colors.backgroundPrimary.color    // from "Background.primary" or "background-primary"
+Colors.textPrimary.uiColor        // from "Text.primary" or "text-primary"
+Colors.brandPrimary.color         // from "Brand.primary" or "brand-primary"
+Colors.bg1.color                  // from "bg1"
+Colors.accent.color               // from "accent"
 ```
 
 ### 2. Subscript Access
 ```swift
-Colors["brand-primary"]?.color
-Colors["text-heading"]?.uiColor
+// Use exact JSON key names:
+Colors["Background.primary"]?.color     // nested structure
+Colors["bg1"]?.color                   // simple naming
+Colors["Brand.primary"]?.uiColor
 ```
 
 ### 3. String-Based Access
 ```swift
-Colors.color(named: "brand-primary")?.color
-Colors.swiftUIColor(named: "success-green")
-Colors.uiColor(named: "error-red")
+// Works with any color name from your JSON:
+Colors.color(named: "Background.primary")?.color
+Colors.swiftUIColor(named: "bg1")
+Colors.uiColor(named: "Brand.primary")
 ```
 
 ### 4. Semantic Grouping (Auto-Generated)
 ```swift
-Colors.Brand.main.color          // If "app-brand-main" exists
-Colors.Text.heading.color        // If "app-text-heading" exists
-Colors.State.success.color       // If "app-state-success" exists
+// For nested JSON structures, ColorKit creates semantic groupings:
+Colors.Background.primary.color   // from "Background.primary"
+Colors.Text.primary.color         // from "Text.primary" 
+Colors.Brand.primary.color        // from "Brand.primary"
+Colors.Status.success.color       // from "Status.success"
 ```
 
 ## 🎨 Supported JSON Structures
 
-ColorKit automatically handles various JSON color formats:
+ColorKit automatically handles various JSON color formats. **Your color names can be anything** - ColorKit adapts to your naming convention:
 
-### Simple Key-Value
+### Simple Key-Value (Any Names Work!)
 ```json
 {
-  "primary": "#007AFF",
-  "secondary": "#5856D6"
+  "bg1": "#FFFFFF",
+  "bg2": "#F5F5F5",
+  "text1": "#000000",
+  "accent": "#007AFF",
+  "primaryColor": "#5856D6"
 }
 ```
 
@@ -273,22 +310,22 @@ struct MyView: View {
     var body: some View {
         VStack(spacing: 16) {
             Text("Title")
-                .foregroundColor(Colors.textHeading.color)
+                .foregroundColor(Colors.textPrimary.color)     // from "Text.primary"
                 .font(.title)
             
             Text("Subtitle") 
-                .foregroundColor(Colors.textBody.color)
+                .foregroundColor(Colors.textSecondary.color)   // from "Text.secondary"
                 .font(.body)
                 
             Button("Action") {
                 // Handle action
             }
             .foregroundColor(.white)
-            .background(Colors.brandPrimary.color)
+            .background(Colors.brandPrimary.color)          // from "Brand.primary"
             .cornerRadius(8)
         }
         .padding()
-        .background(Colors.backgroundMain.color)
+        .background(Colors.backgroundPrimary.color)         // from "Background.primary"
     }
 }
 ```
@@ -299,15 +336,15 @@ class MyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Colors.backgroundMain.uiColor
+        view.backgroundColor = Colors.backgroundPrimary.uiColor   // from "Background.primary"
         
         let titleLabel = UILabel()
-        titleLabel.textColor = Colors.textHeading.uiColor
+        titleLabel.textColor = Colors.textPrimary.uiColor         // from "Text.primary"
         titleLabel.text = "Welcome"
         
         let button = UIButton()
         button.setTitleColor(.white, for: .normal) 
-        button.backgroundColor = Colors.brandPrimary.uiColor
+        button.backgroundColor = Colors.brandPrimary.uiColor      // from "Brand.primary"
         button.setTitle("Get Started", for: .normal)
         
         // Add to view hierarchy...
