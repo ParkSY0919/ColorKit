@@ -232,7 +232,8 @@ internal class DynamicColorProvider {
     }
     
     var allPropertyNames: [String] {
-        return Array(discoveryResult?.propertyMappings.keys ?? []).sorted()
+        guard let result = discoveryResult else { return [] }
+        return Array(result.propertyMappings.keys).sorted()
     }
     
     var colorsByCategory: [String: [String: ColorTheme]] {
