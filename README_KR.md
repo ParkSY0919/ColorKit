@@ -6,7 +6,7 @@
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**ColorKit**은 JSON 디자인 토큰으로부터 자동으로 색상을 탐지하고 관리하는 강력하고 유연한 Swift 패키지입니다. 설정이 전혀 필요 없습니다 - JSON 파일만 추가하면 완전한 타입 안전성과 자동 다크 모드 지원으로 색상을 바로 사용할 수 있습니다.
+**ColorKit**은 JSON 디자인 토큰으로부터 자동으로 색상을 탐지하고 관리하는 강력하고 유연한 Swift 패키지입니다. **모든 색상 이름 방식을 지원** - `bg1`, `background-primary`, `Background.primary` 등 어떤 이름이든 가능합니다. 설정이 전혀 필요 없습니다 - JSON 파일만 추가하면 완전한 타입 안전성과 자동 다크 모드 지원으로 색상을 바로 사용할 수 있습니다.
 
 [한국어 README](README_KR.md) | [English README](README.md)
 
@@ -18,7 +18,7 @@
 - **🎯 다중 접근 패턴**: 프로퍼티 방식, 서브스크립트, 문자열 기반 접근
 - **🌙 자동 다크 모드**: 라이트/다크 테마 자동 지원
 - **📱 SwiftUI & UIKit**: 두 프레임워크 완전 지원
-- **🔍 스마트 탐지**: 모든 JSON 색상 구조를 자동 발견 및 변환
+- **🔍 스마트 탐지**: 모든 색상 이름 지원 - `bg1`, `primaryColor`, `Brand.main` 등
 - **⚡ 타입 안전성**: IDE 자동완성과 컴파일 타임 안전성
 - **🎨 유연한 JSON 지원**: Figma 익스포트, 커스텀 토큰, 중첩 구조 지원
 
@@ -36,17 +36,33 @@ dependencies: [
 
 ### 2. 색상 JSON 파일 추가
 
-앱 번들에 JSON 파일 생성 (예: `Resources/app-colors.json`):
+ColorKit은 모든 JSON 색상 구조를 지원합니다! 다음은 예시입니다:
 
+**간단한 형태:**
 ```json
 {
-  "brand-primary": "#007AFF",
-  "brand-secondary": "#5856D6", 
-  "text-heading": "#000000",
-  "text-body": "#333333",
-  "background-main": "#FFFFFF",
-  "success-green": "#34C759",
-  "error-red": "#FF3B30"
+  "bg1": "#FFFFFF",
+  "bg2": "#F5F5F5", 
+  "text1": "#000000",
+  "text2": "#666666",
+  "accent": "#007AFF"
+}
+```
+
+**중첩 구조 (Figma 익스포트처럼):**
+```json
+{
+  "Background": {
+    "primary": "#FFFFFF",
+    "secondary": "#F5F5F5"
+  },
+  "Text": {
+    "primary": "#000000",
+    "secondary": "#666666"
+  },
+  "Brand": {
+    "primary": "#007AFF"
+  }
 }
 ```
 
@@ -60,7 +76,8 @@ import ColorKit
 @main
 struct MyApp: App {
     init() {
-        ColorKit.configure(jsonFileName: "app-colors")
+        // 어떤 JSON 파일 이름도 가능
+        ColorKit.configure(jsonFileName: "your-colors") // 또는 "design-tokens", "figma-export" 등
     }
     
     var body: some Scene {
@@ -73,6 +90,8 @@ struct MyApp: App {
 
 ### 4. 모든 곳에서 색상 사용
 
+ColorKit이 JSON 색상 이름을 Swift 속성으로 자동 변환합니다:
+
 ```swift
 import SwiftUI
 import ColorKit
@@ -81,16 +100,24 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Text("환영합니다!")
-                .foregroundColor(Colors.brandPrimary.color)
-                .background(Colors.backgroundMain.color)
+                .foregroundColor(Colors.backgroundPrimary.color)  // "Background.primary"에서
+                .background(Colors.textPrimary.color)             // "Text.primary"에서
             
-            Button("성공") {
+            Button("시작하기") {
                 // 액션
             }
-            .foregroundColor(Colors.successGreen.color)
+            .foregroundColor(Colors.brandPrimary.color)           // "Brand.primary"에서
         }
+        .background(Colors.backgroundSecondary.color)             // "Background.secondary"에서
     }
 }
+```
+
+**간단한 이름("bg1", "bg2" 같은)의 경우:**
+```swift
+Text("안녕하세요")
+    .foregroundColor(Colors.bg1.color)      // "bg1"에서
+    .background(Colors.text1.color)         // "text1"에서
 ```
 
 ## 🎯 다중 접근 패턴
@@ -99,41 +126,51 @@ ColorKit은 색상에 접근하는 4가지 방법을 제공합니다:
 
 ### 1. 프로퍼티 스타일 접근 (권장)
 ```swift
-Colors.brandPrimary.color        // SwiftUI Color
-Colors.brandPrimary.uiColor      // UIColor
-Colors.textHeading.color
-Colors.backgroundMain.color
+// ColorKit이 JSON에서 자동으로 속성을 생성합니다:
+Colors.backgroundPrimary.color    // "Background.primary" 또는 "background-primary"에서
+Colors.textPrimary.uiColor        // "Text.primary" 또는 "text-primary"에서
+Colors.brandPrimary.color         // "Brand.primary" 또는 "brand-primary"에서
+Colors.bg1.color                  // "bg1"에서
+Colors.accent.color               // "accent"에서
 ```
 
 ### 2. 서브스크립트 접근
 ```swift
-Colors["brand-primary"]?.color
-Colors["text-heading"]?.uiColor
+// 정확한 JSON 키 이름 사용:
+Colors["Background.primary"]?.color     // 중첩 구조
+Colors["bg1"]?.color                   // 간단한 이름
+Colors["Brand.primary"]?.uiColor
 ```
 
 ### 3. 문자열 기반 접근
 ```swift
-Colors.color(named: "brand-primary")?.color
-Colors.swiftUIColor(named: "success-green")
-Colors.uiColor(named: "error-red")
+// JSON의 모든 색상 이름과 작동:
+Colors.color(named: "Background.primary")?.color
+Colors.swiftUIColor(named: "bg1")
+Colors.uiColor(named: "Brand.primary")
 ```
 
 ### 4. 의미론적 그룹핑 (자동 생성)
 ```swift
-Colors.Brand.main.color          // "app-brand-main"이 존재하면
-Colors.Text.heading.color        // "app-text-heading"이 존재하면
-Colors.State.success.color       // "app-state-success"가 존재하면
+// 중첩 JSON 구조의 경우 ColorKit이 의미론적 그룹을 생성:
+Colors.Background.primary.color   // "Background.primary"에서
+Colors.Text.primary.color         // "Text.primary"에서
+Colors.Brand.primary.color        // "Brand.primary"에서
+Colors.Status.success.color       // "Status.success"에서
 ```
 
 ## 🎨 지원하는 JSON 구조
 
-ColorKit은 다양한 JSON 색상 형태를 자동으로 처리합니다:
+ColorKit은 다양한 JSON 색상 형태를 자동으로 처리합니다. **색상 이름은 모든 것이 가능** - ColorKit이 당신의 명명 규칙에 맞추어 작동합니다:
 
-### 단순 키-값 구조
+### 단순 키-값 구조 (모든 이름 가능!)
 ```json
 {
-  "primary": "#007AFF",
-  "secondary": "#5856D6"
+  "bg1": "#FFFFFF",
+  "bg2": "#F5F5F5",
+  "text1": "#000000",
+  "accent": "#007AFF",
+  "primaryColor": "#5856D6"
 }
 ```
 
@@ -273,22 +310,22 @@ struct MyView: View {
     var body: some View {
         VStack(spacing: 16) {
             Text("제목")
-                .foregroundColor(Colors.textHeading.color)
+                .foregroundColor(Colors.textPrimary.color)     // "Text.primary"에서
                 .font(.title)
             
             Text("부제목") 
-                .foregroundColor(Colors.textBody.color)
+                .foregroundColor(Colors.textSecondary.color)   // "Text.secondary"에서
                 .font(.body)
                 
             Button("액션") {
                 // 액션 처리
             }
             .foregroundColor(.white)
-            .background(Colors.brandPrimary.color)
+            .background(Colors.brandPrimary.color)          // "Brand.primary"에서
             .cornerRadius(8)
         }
         .padding()
-        .background(Colors.backgroundMain.color)
+        .background(Colors.backgroundPrimary.color)         // "Background.primary"에서
     }
 }
 ```
@@ -299,15 +336,15 @@ class MyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Colors.backgroundMain.uiColor
+        view.backgroundColor = Colors.backgroundPrimary.uiColor   // "Background.primary"에서
         
         let titleLabel = UILabel()
-        titleLabel.textColor = Colors.textHeading.uiColor
+        titleLabel.textColor = Colors.textPrimary.uiColor         // "Text.primary"에서
         titleLabel.text = "환영합니다"
         
         let button = UIButton()
         button.setTitleColor(.white, for: .normal) 
-        button.backgroundColor = Colors.brandPrimary.uiColor
+        button.backgroundColor = Colors.brandPrimary.uiColor      // "Brand.primary"에서
         button.setTitle("시작하기", for: .normal)
         
         // 뷰 계층에 추가...
