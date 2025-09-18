@@ -64,7 +64,7 @@ public struct Colors {
     /// Get SwiftUI Color by name with automatic light/dark adaptation
     /// - Parameter colorName: Color name (JSON key or property name)
     /// - Returns: SwiftUI Color with fallback to gray if not found
-    @available(iOS 14.0, macOS 11.0, *)
+    @available(iOS 13.0, macOS 11.0, *)
     public static func swiftUIColor(named colorName: String) -> Color {
         guard let theme = color(named: colorName) else {
             print("⚠️ ColorKit: Color '\(colorName)' not found. Using fallback.")
@@ -134,7 +134,7 @@ public struct DynamicColorProperty {
     
     #if canImport(SwiftUI)
     /// Get SwiftUI Color for this property
-    @available(iOS 14.0, macOS 11.0, *)
+    @available(iOS 13.0, macOS 11.0, *)
     public var color: Color {
         return Colors.swiftUIColor(named: propertyName)
     }
@@ -159,7 +159,7 @@ extension ColorTheme {
     
     #if canImport(SwiftUI)
     /// Get SwiftUI Color with automatic light/dark switching
-    @available(iOS 14.0, macOS 11.0, *)
+    @available(iOS 13.0, macOS 10.15, *)
     public var swiftUIColor: Color {
         guard let lightColor = Color(hex: light),
               let darkColor = Color(hex: dark) else {

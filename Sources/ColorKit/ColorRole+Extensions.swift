@@ -35,7 +35,7 @@ extension UIColor {
 // MARK: - SwiftUI Color Extensions
 
 #if canImport(SwiftUI)
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 extension Color {
     /// Create SwiftUI Color from hex string
     public init?(hex: String) {
