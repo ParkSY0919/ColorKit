@@ -380,4 +380,4 @@ ColorKit is available under the MIT license. See the [LICENSE](LICENSE) file for
 
 ---
 
-Made with ❤️ by [ParkSY0919](https://github.com/ParkSY0919)
+Made with by [ParkSY0919](https://github.com/ParkSY0919)
