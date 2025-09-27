@@ -40,9 +40,10 @@ Swift Package Manager로 프로젝트에 ColorKit 추가:
 3. **Up to Next Major Version** 선택 후 `0.1.0` 입력
 4. **Add Package** 클릭
 5. **⚠️ 중요**: 패키지 구성요소를 타겟에 할당하라고 할 때:
+
    - **ColorKit (Library)** 를 메인 앱 타겟에 할당
    - **ColorKitPlugin (Executable)** 을 메인 앱 타겟에 할당 ("None"이 아닌)
-   
+
    이렇게 해야 디자인 토큰에서 자동 코드 생성이 가능한 빌드 플러그인이 활성화됩니다.
 
 #### Package.swift에서
@@ -371,6 +372,28 @@ print("누락된 색상: \(missingColors)")
 Colors.successGreen.color           // "success-green" 찾기
 Colors.primaryButton.color          // "primary-button" 찾기
 Colors.textHeadingLarge.color       // "text-heading-large" 찾기
+Colors.backgroundSurfaceElevated.color  // "background-surface-elevated" 찾기
+```
+
+**실제 작동 예시:**
+
+```json
+{
+  "text-primary": "#1D1D1F",
+  "text-secondary": "#666666",
+  "background-main": "#FFFFFF",
+  "brand-primary": "#007AFF"
+}
+```
+
+```swift
+// 이제 다음과 같이 접근 가능합니다:
+Text("제목")
+    .foregroundColor(Colors.textPrimary.color)      // "text-primary"에서 자동 변환
+    .background(Colors.backgroundMain.color)        // "background-main"에서 자동 변환
+
+Button("액션") { }
+    .background(Colors.brandPrimary.color)           // "brand-primary"에서 자동 변환
 ```
 
 ### 정확한 키에 대한 서브스크립트 접근

@@ -40,9 +40,10 @@ Add ColorKit to your project using Swift Package Manager:
 3. Select **Up to Next Major Version** and enter `0.1.0`
 4. Click **Add Package**
 5. **⚠️ Important**: When asked to assign package components to targets:
+
    - Assign **ColorKit (Library)** to your main app target
    - Assign **ColorKitPlugin (Executable)** to your main app target (not "None")
-   
+
    This enables the build plugin for automatic code generation from design tokens.
 
 #### In Package.swift
@@ -371,6 +372,28 @@ print("Missing colors: \(missingColors)")
 Colors.successGreen.color           // Finds "success-green"
 Colors.primaryButton.color          // Finds "primary-button"
 Colors.textHeadingLarge.color       // Finds "text-heading-large"
+Colors.backgroundSurfaceElevated.color  // Finds "background-surface-elevated"
+```
+
+**Real Working Example:**
+
+```json
+{
+  "text-primary": "#1D1D1F",
+  "text-secondary": "#666666",
+  "background-main": "#FFFFFF",
+  "brand-primary": "#007AFF"
+}
+```
+
+```swift
+// Now you can access like this:
+Text("Title")
+    .foregroundColor(Colors.textPrimary.color)      // Auto-converts from "text-primary"
+    .background(Colors.backgroundMain.color)         // Auto-converts from "background-main"
+
+Button("Action") { }
+    .background(Colors.brandPrimary.color)           // Auto-converts from "brand-primary"
 ```
 
 ### Subscript Access for Exact Keys
