@@ -33,11 +33,23 @@ public struct Colors {
     /// - Parameter colorName: Color name (JSON key or property name)
     /// - Returns: ColorTheme if found
     public static func color(named colorName: String) -> ColorTheme? {
-        // Try JSON key first, then property name
+        // Try JSON key first
         if let theme = colorTheme(for: colorName) {
             return theme
         }
-        return colorTheme(forProperty: colorName)
+        
+        // Try property name
+        if let theme = colorTheme(forProperty: colorName) {
+            return theme
+        }
+        
+        // Try converting kebab-case to camelCase for property lookup
+        let camelCaseName = convertKebabCaseToCamelCase(colorName)
+        if camelCaseName != colorName {
+            return colorTheme(forProperty: camelCaseName)
+        }
+        
+        return nil
     }
     
     // MARK: - Subscript Access
@@ -129,7 +141,19 @@ public struct DynamicColorProperty {
     
     /// Get the ColorTheme for this property
     public var theme: ColorTheme? {
-        return Colors.colorTheme(forProperty: propertyName)
+        // First try direct property name
+        if let theme = Colors.colorTheme(forProperty: propertyName) {
+            return theme
+        }
+        
+        // If not found, try converting kebab-case to camelCase
+        let camelCaseName = convertKebabCaseToCamelCase(propertyName)
+        if camelCaseName != propertyName {
+            return Colors.colorTheme(forProperty: camelCaseName)
+        }
+        
+        // If still not found, try as JSON key directly
+        return Colors.colorTheme(for: propertyName)
     }
     
     #if canImport(SwiftUI)
@@ -156,6 +180,23 @@ public struct DynamicColorProperty {
     public var exists: Bool {
         return theme != nil
     }
+}
+
+// MARK: - Kebab-case to CamelCase Conversion
+
+/// Convert kebab-case string to camelCase
+/// - Parameter kebabCase: String in kebab-case format (e.g., "text-secondary")
+/// - Returns: String in camelCase format (e.g., "textSecondary")
+internal func convertKebabCaseToCamelCase(_ kebabCase: String) -> String {
+    let components = kebabCase.components(separatedBy: "-")
+    guard !components.isEmpty else { return kebabCase }
+    
+    var result = components[0].lowercased()
+    for component in components.dropFirst() {
+        result += component.capitalized
+    }
+    
+    return result
 }
 
 // MARK: - ColorTheme Extensions for UI
