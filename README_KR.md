@@ -39,6 +39,11 @@ Swift Package Manager로 프로젝트에 ColorKit 추가:
 2. 저장소 URL 입력: `https://github.com/ParkSY0919/ColorKit.git`
 3. **Up to Next Major Version** 선택 후 `0.1.0` 입력
 4. **Add Package** 클릭
+5. **⚠️ 중요**: 패키지 구성요소를 타겟에 할당하라고 할 때:
+   - **ColorKit (Library)** 를 메인 앱 타겟에 할당
+   - **ColorKitPlugin (Executable)** 을 메인 앱 타겟에 할당 ("None"이 아닌)
+   
+   이렇게 해야 디자인 토큰에서 자동 코드 생성이 가능한 빌드 플러그인이 활성화됩니다.
 
 #### Package.swift에서
 
@@ -631,6 +636,8 @@ ColorKit은 Figma 디자인 토큰에서 Swift 색상 열거형을 자동으로 
 
 ### 빌드 플러그인 설정
 
+> **⚠️ 중요**: 패키지 설치 시 ColorKit 라이브러리와 ColorKitPlugin 실행파일 모두 타겟에 할당되었는지 확인하세요. 플러그인을 "None"으로 설정하면 정적 색상 프로퍼티와 IDE 자동완성 혜택을 잃게 됩니다.
+
 1. **디자인 토큰 파일을** 타겟의 `Resources/design-tokens/` 디렉터리에 추가:
 
    - `light.tokens.json` - Figma의 라이트 테마 색상
@@ -640,6 +647,16 @@ ColorKit은 Figma 디자인 토큰에서 Swift 색상 열거형을 자동으로 
 2. **플러그인이 빌드 중 자동 실행**되어 생성합니다:
    - `Colors.swift` - 모든 색상의 타입 안전한 열거형
    - `ColorThemes.swift` - 내부 테마 데이터
+
+#### ColorKitPlugin을 "None"으로 설정하면 어떻게 될까요?
+
+빌드 플러그인을 타겟에 할당하지 않으면:
+
+- ❌ **정적 색상 프로퍼티 없음**: `Colors.brandPrimary.color` 사용 불가
+- ❌ **제한된 IDE 자동완성**: 색상 이름에 대한 컴파일 타임 검증 없음
+- ❌ **수동 폴백 필요**: 폴백과 함께 서브스크립트 접근 방식만 사용 가능
+- ✅ **동적 접근은 여전히 작동**: `Colors["brand-primary"]?.color` 계속 사용 가능
+- ✅ **런타임 폴백 활성**: 누락된 색상은 여전히 Color.gray로 폴백
 
 ### Figma 토큰 형식
 

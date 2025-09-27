@@ -39,6 +39,11 @@ Add ColorKit to your project using Swift Package Manager:
 2. Enter the repository URL: `https://github.com/ParkSY0919/ColorKit.git`
 3. Select **Up to Next Major Version** and enter `0.1.0`
 4. Click **Add Package**
+5. **⚠️ Important**: When asked to assign package components to targets:
+   - Assign **ColorKit (Library)** to your main app target
+   - Assign **ColorKitPlugin (Executable)** to your main app target (not "None")
+   
+   This enables the build plugin for automatic code generation from design tokens.
 
 #### In Package.swift
 
@@ -631,6 +636,8 @@ ColorKit includes a build plugin that automatically generates Swift color enums 
 
 ### Setup Build Plugin
 
+> **⚠️ Important**: Make sure both the ColorKit library and ColorKitPlugin executable are assigned to your target during package installation. If the plugin is set to "None", you'll lose static color properties and IDE autocompletion benefits.
+
 1. **Add design token files** to your target's `Resources/design-tokens/` directory:
 
    - `light.tokens.json` - Light theme colors from Figma
@@ -640,6 +647,16 @@ ColorKit includes a build plugin that automatically generates Swift color enums 
 2. **The plugin automatically runs** during build and generates:
    - `Colors.swift` - Type-safe enum with all your colors
    - `ColorThemes.swift` - Internal theme data
+
+#### What happens if ColorKitPlugin is set to "None"?
+
+If you don't assign the build plugin to your target:
+
+- ❌ **No static color properties**: `Colors.brandPrimary.color` won't be available
+- ❌ **Limited IDE autocompletion**: No compile-time validation for color names
+- ❌ **Manual fallbacks required**: Must use subscript access with fallbacks
+- ✅ **Dynamic access still works**: `Colors["brand-primary"]?.color` remains functional
+- ✅ **Runtime fallbacks active**: Missing colors still fallback to Color.gray
 
 ### Figma Token Format
 
