@@ -142,7 +142,7 @@ extension Colors {
         for category in sortedCategories {
             guard let categoryColors = discoveryResult.categorizedColors[category] else { continue }
             
-            code += "    // MARK: - \\(category.capitalized) Colors\\n\\n"
+            code += "    // MARK: - \(category.capitalized) Colors\n\n"
             
             let sortedColors = categoryColors.sorted { $0.key < $1.key }
             for (propertyName, _) in sortedColors {
