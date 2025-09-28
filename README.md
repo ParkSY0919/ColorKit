@@ -19,7 +19,7 @@
 - **🚀 Zero Configuration**: Just add your JSON file - no mapping setup required
 - **🎯 Multiple Access Patterns**: DynamicColorProperty, subscript, string-based, and convenience namespaces
 - **🛡️ Automatic Fallbacks**: Safe progressive development - colors fallback to Color.gray when missing
-- **🔧 Kebab-case Support**: Automatic conversion and subscript access for design tool exports
+- **🔧 Kebab-case Support**: Automatic conversion for JSON keys AND fixed kebab-case file naming for theme detection
 - **🌙 Automatic Dark Mode**: Built-in light/dark theme support with automatic detection
 - **📱 SwiftUI & UIKit**: Full support for both frameworks
 - **🔍 Automatic Discovery**: Works with ANY color naming - `bg1`, `primaryColor`, `Brand.main`, etc.
@@ -112,9 +112,13 @@ struct MyApp: App {
     init() {
         // Works with any JSON file name - ColorKit automatically detects light/dark variants!
         ColorKit.configure(jsonFileName: "app-colors")
-        // Automatically finds:
-        // - app-colors-light.json + app-colors-dark.json (for separate theme files)
-        // - OR app-colors.json (for single file with embedded themes)
+        // Automatically finds (in this order):
+        // 1. app-colors-light.json + app-colors-dark.json (separate theme files)
+        // 2. app-colors.json (fallback to single file with embedded themes)
+        //
+        // ⚠️ File naming pattern is fixed: uses kebab-case suffixes only
+        // ✅ Supported: "app-colors-light.json" / "app-colors-dark.json"
+        // ❌ NOT supported: "app-colorsLight.json" / "app-colorsDark.json"
 
         // Optional: Validate setup
         ColorKit.validateSetup()
@@ -557,11 +561,31 @@ ColorKit automatically handles various JSON color formats. **Your color names ca
 
 ## 🌙 Automatic Light/Dark Mode Support
 
-ColorKit provides **three ways** to handle light and dark themes, automatically detecting the best approach:
+ColorKit provides **three ways** to handle light and dark themes, with automatic detection using **specific file naming patterns**.
+
+### ⚠️ Important: File Naming Requirements
+
+ColorKit uses **fixed naming patterns** for automatic theme file detection:
+
+| Pattern | Example | Status |
+|---------|---------|--------|
+| `{fileName}-light.json` + `{fileName}-dark.json` | `app-colors-light.json` + `app-colors-dark.json` | ✅ **Supported** |
+| `{fileName}Light.json` + `{fileName}Dark.json` | `app-colorsLight.json` + `app-colorsDark.json` | ❌ **NOT Supported** |
+| `{fileName}_light.json` + `{fileName}_dark.json` | `app-colors_light.json` + `app-colors_dark.json` | ❌ **NOT Supported** |
+| `{fileName}.light.json` + `{fileName}.dark.json` | `app-colors.light.json` + `app-colors.dark.json` | ❌ **NOT Supported** |
+
+> **Why this restriction?** The detection logic in `DynamicColorProvider` (lines 194-216) uses hardcoded string patterns `"{jsonFileName}-light"` and `"{jsonFileName}-dark"` for reliable file discovery.
+
+ColorKit automatically detects the best approach:
 
 ### Method 1: Separate Light/Dark JSON Files (Recommended) 🆕
 
-Simply create two JSON files with `-light` and `-dark` suffixes:
+**File Naming Requirements**: Create two JSON files with **exact** `-light` and `-dark` suffixes (kebab-case only):
+
+⚠️ **Important**: ColorKit uses a fixed naming pattern for theme file detection:
+- ✅ **Supported**: `{fileName}-light.json` / `{fileName}-dark.json`
+- ❌ **NOT Supported**: `{fileName}Light.json` / `{fileName}Dark.json` (camelCase)
+- ❌ **NOT Supported**: `{fileName}_light.json` / `{fileName}_dark.json` (snake_case)
 
 **app-colors-light.json:**
 
@@ -591,7 +615,7 @@ Simply create two JSON files with `-light` and `-dark` suffixes:
 }
 ```
 
-**No code changes required!** ColorKit automatically detects both files and enables dynamic color switching:
+**No code changes required!** ColorKit automatically detects both files using the exact pattern `{fileName}-light.json` and `{fileName}-dark.json`, then enables dynamic color switching:
 
 ```swift
 // Same configuration as before
@@ -626,13 +650,23 @@ Text("Hello")
 }
 ```
 
-### 🚀 Fallback System
+### 🚀 Automatic Detection & Fallback System
 
-ColorKit automatically chooses the appropriate method available:
+ColorKit automatically detects and chooses the appropriate theme method:
 
-1. **If both `-light.json` and `-dark.json` exist** → Uses separate files (Method 1)
-2. **If only single JSON exists** → Checks for embedded light/dark structure (Method 2)
-3. **If neither** → Uses single colors for both themes (Method 3)
+1. **First checks for separate theme files**: `{fileName}-light.json` + `{fileName}-dark.json`
+   - ✅ Uses separate files (Method 1) if both exist
+   - ⚠️ **Exact naming required**: Must use kebab-case suffixes `-light` / `-dark`
+2. **Falls back to single file**: `{fileName}.json`
+   - Checks for embedded light/dark structure (Method 2)
+   - Or uses single colors for both themes (Method 3)
+
+**File Detection Logic**:
+```swift
+// ColorKit searches in this exact order:
+// 1. "app-colors-light.json" + "app-colors-dark.json"
+// 2. "app-colors.json" (if separate files not found)
+```
 
 ### ✨ Real-time Theme Switching
 

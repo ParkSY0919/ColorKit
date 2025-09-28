@@ -19,7 +19,7 @@
 - **🚀 제로 설정**: JSON 파일만 추가하면 끝 - 매핑 설정 불필요
 - **🎯 다중 접근 패턴**: DynamicColorProperty, 서브스크립트, 문자열 기반, 편의 네임스페이스
 - **🛡️ 자동 폴백**: 안전한 점진적 개발 - 누락된 색상은 Color.gray로 폴백
-- **🔧 케밥케이스 지원**: 자동 변환과 디자인 툴 익스포트를 위한 서브스크립트 접근
+- **🔧 케밥케이스 지원**: JSON 키 자동 변환 및 테마 감지를 위한 고정 케밥케이스 파일명
 - **🌙 자동 다크 모드**: 자동 감지를 통한 라이트/다크 테마 자동 지원
 - **📱 SwiftUI & UIKit**: 두 프레임워크 완전 지원
 - **🔍 자동 탐지**: 모든 색상 이름 지원 - `bg1`, `primaryColor`, `Brand.main` 등
@@ -112,9 +112,13 @@ struct MyApp: App {
     init() {
         // 어떤 JSON 파일 이름도 가능 - ColorKit이 자동으로 라이트/다크 변형을 감지합니다!
         ColorKit.configure(jsonFileName: "app-colors")
-        // 자동으로 다음을 찾습니다:
-        // - app-colors-light.json + app-colors-dark.json (별도 테마 파일용)
-        // - 또는 app-colors.json (임베디드 테마가 있는 단일 파일용)
+        // 자동으로 다음 순서로 찾습니다:
+        // 1. app-colors-light.json + app-colors-dark.json (별도 테마 파일)
+        // 2. app-colors.json (별도 파일이 없으면 단일 파일로 폴백)
+        //
+        // ⚠️ 파일명 패턴은 고정: 케밥케이스 접미사만 사용
+        // ✅ 지원됨: "app-colors-light.json" / "app-colors-dark.json"
+        // ❌ 지원되지 않음: "app-colorsLight.json" / "app-colorsDark.json"
 
         // 선택사항: 설정 검증
         ColorKit.validateSetup()
@@ -557,11 +561,31 @@ ColorKit은 다양한 JSON 색상 형태를 자동으로 처리합니다. **색�
 
 ## 🌙 자동 라이트/다크 모드 지원
 
-ColorKit은 라이트 및 다크 테마를 처리하는 **세 가지 방법**을 제공하며, 자동으로 최적의 방식을 감지합니다:
+ColorKit은 라이트 및 다크 테마를 처리하는 **세 가지 방법**을 제공하며, **특정 파일 명명 패턴**을 사용하여 자동 감지합니다.
+
+### ⚠️ 중요: 파일 명명 요구사항
+
+ColorKit은 자동 테마 파일 감지를 위해 **고정된 명명 패턴**을 사용합니다:
+
+| 패턴 | 예시 | 상태 |
+|---------|---------|--------|
+| `{파일명}-light.json` + `{파일명}-dark.json` | `app-colors-light.json` + `app-colors-dark.json` | ✅ **지원됨** |
+| `{파일명}Light.json` + `{파일명}Dark.json` | `app-colorsLight.json` + `app-colorsDark.json` | ❌ **지원되지 않음** |
+| `{파일명}_light.json` + `{파일명}_dark.json` | `app-colors_light.json` + `app-colors_dark.json` | ❌ **지원되지 않음** |
+| `{파일명}.light.json` + `{파일명}.dark.json` | `app-colors.light.json` + `app-colors.dark.json` | ❌ **지원되지 않음** |
+
+> **왜 이런 제한이 있나요?** `DynamicColorProvider`의 감지 로직(194-216라인)이 신뢰할 수 있는 파일 발견을 위해 하드코딩된 문자열 패턴 `"{jsonFileName}-light"`와 `"{jsonFileName}-dark"`를 사용하기 때문입니다.
+
+ColorKit이 자동으로 최적의 방식을 감지합니다:
 
 ### 방법 1: 별도 라이트/다크 JSON 파일 (권장) 🆕
 
-`-light`와 `-dark` 접미사가 붙은 두 개의 JSON 파일을 생성하기만 하면 됩니다:
+**파일명 요구사항**: **정확한** `-light`와 `-dark` 접미사가 붙은 두 개의 JSON 파일을 생성해야 합니다 (케밥케이스만):
+
+⚠️ **중요**: ColorKit은 테마 파일 감지를 위해 고정된 명명 패턴을 사용합니다:
+- ✅ **지원됨**: `{파일명}-light.json` / `{파일명}-dark.json`
+- ❌ **지원되지 않음**: `{파일명}Light.json` / `{파일명}Dark.json` (카멜케이스)
+- ❌ **지원되지 않음**: `{파일명}_light.json` / `{파일명}_dark.json` (스네이크케이스)
 
 **app-colors-light.json:**
 
@@ -591,7 +615,7 @@ ColorKit은 라이트 및 다크 테마를 처리하는 **세 가지 방법**을
 }
 ```
 
-**코드 변경이 전혀 필요 없습니다!** ColorKit이 자동으로 두 파일을 감지하고 동적 색상 전환을 활성화합니다:
+**코드 변경이 전혀 필요 없습니다!** ColorKit이 자동으로 `{파일명}-light.json`과 `{파일명}-dark.json` 정확한 패턴을 사용하여 두 파일을 감지한 후 동적 색상 전환을 활성화합니다:
 
 ```swift
 // 기존과 동일한 설정
@@ -626,13 +650,23 @@ Text("안녕하세요")
 }
 ```
 
-### 🚀 폴백 시스템
+### 🚀 자동 감지 및 폴백 시스템
 
-ColorKit이 자동으로 사용 가능한 적절한 방법을 선택합니다:
+ColorKit이 자동으로 감지하고 적절한 테마 방식을 선택합니다:
 
-1. **`-light.json`과 `-dark.json` 모두 존재하는 경우** → 별도 파일 사용 (방법 1)
-2. **단일 JSON만 존재하는 경우** → 임베디드 라이트/다크 구조 확인 (방법 2)
-3. **둘 다 없는 경우** → 두 테마에 동일한 색상 사용 (방법 3)
+1. **먼저 별도 테마 파일 확인**: `{파일명}-light.json` + `{파일명}-dark.json`
+   - ✅ 두 파일이 모두 존재하면 별도 파일 사용 (방법 1)
+   - ⚠️ **정확한 명명 필수**: 반드시 케밥케이스 접미사 `-light` / `-dark` 사용
+2. **단일 파일로 폴백**: `{파일명}.json`
+   - 임베디드 라이트/다크 구조 확인 (방법 2)
+   - 또는 두 테마에 동일한 색상 사용 (방법 3)
+
+**파일 감지 로직**:
+```swift
+// ColorKit이 이 정확한 순서로 검색:
+// 1. "app-colors-light.json" + "app-colors-dark.json"
+// 2. "app-colors.json" (별도 파일을 찾지 못한 경우)
+```
 
 ### ✨ 실시간 테마 전환
 
