@@ -1,0 +1,21 @@
+{
+  "brand-primary": "#007AFF",
+  "brand-secondary": "#5AC8FA",
+  "brand-tertiary": "#AF52DE",
+  "background-main": "#FFFFFF",
+  "background-secondary": "#F5F5F5",
+  "background-card": "#FFFFFF",
+  "text-heading": "#000000",
+  "text-body": "#333333",
+  "text-caption": "#666666",
+  "text-inverse": "#FFFFFF",
+  "state-success": "#34C759",
+  "state-warning": "#FF9500",
+  "state-error": "#FF3B30",
+  "state-info": "#007AFF",
+  "border-light": "#E5E5EA",
+  "border-medium": "#C6C6C8",
+  "border-strong": "#8E8E93",
+  "accent-primary": "#007AFF",
+  "accent-secondary": "#5AC8FA"
+}

@@ -10,7 +10,7 @@
 
 **핵심 기능**: ColorKit은 **DynamicColorProperty** 시스템을 특징으로 하여 다중 접근 패턴, 누락된 색상에 대한 자동 폴백, 점진적 향상을 제공합니다 - JSON에 색상이 존재하기 전에 UI 코드를 작성하세요!
 
-[한국어 README](README_KR.md) | [English README](README.md)
+[한국어 README](README_KR.md) | [English README](README.md) | [📱 데모 가이드](ColorKitDemo_README_KR.md)
 
 ---
 
@@ -182,6 +182,55 @@ Text("디자인 시스템")
     .foregroundColor(Colors["text-heading-large"]?.color ?? .primary)
     .background(Colors["background-surface-elevated"]?.color ?? .gray)
 ```
+
+## 📱 ColorKit 데모 앱
+
+ColorKit의 실제 동작을 확인하고 싶으신가요? 이 저장소에 포함된 **ColorKit Demo** 앱을 확인해보세요! 데모는 대화형 예제와 실제 사용 사례를 통해 ColorKit의 모든 기능을 보여줍니다.
+
+### 🚀 데모 체험하기
+
+데모 앱은 `ColorKit-Demo/` 폴더에 있으며 다음을 포함합니다:
+
+- **📋 대화형 예제**: 모든 접근 패턴을 실제로 확인
+- **🎨 실시간 테마 전환**: 자동 라이트/다크 모드 체험
+- **🔧 점진적 향상**: 폴백 색상이 원활하게 작동하는 모습 관찰
+- **📊 색상 탐지**: 사용 가능한 모든 색상을 동적으로 탐색
+- **🎯 모범 사례**: 최적의 사용 패턴 학습
+
+### 🏃‍♂️ 데모 실행하기
+
+1. **데모 프로젝트 열기:**
+   ```bash
+   cd ColorKit-Demo
+   open ColorKitDemo.xcodeproj
+   ```
+
+2. **ColorKit 의존성 설치:**
+   - 데모에는 이미 ColorKit이 로컬 패키지로 포함되어 있습니다
+   - 바로 빌드하고 실행하세요!
+
+3. **기능 탐색:**
+   - 다양한 데모 화면을 탐색해보세요
+   - 기기 설정에서 라이트/다크 모드를 전환해보세요
+   - 다양한 색상 명명 예제를 시도해보세요
+   - 누락된 색상의 폴백 동작을 확인해보세요
+
+### 📚 학습 자료
+
+데모에는 다음이 포함되어 있습니다:
+- **단계별 튜토리얼** (각 기능별)
+- **코드 예제** (프로젝트에 복사해서 사용 가능)
+- **대화형 플레이그라운드** (색상 이름 테스트용)
+- **성능 팁** 및 최적화 가이드
+
+ColorKit을 처음 배우는 초보자부터 고급 기능을 탐구하는 숙련된 개발자까지 모두에게 완벽합니다!
+
+### 📖 데모 문서
+
+데모 앱에 대한 자세한 정보, 설정 방법, 기능 개요, 코드 설명은 전용 데모 문서를 확인하세요:
+
+- **[📱 데모 앱 가이드 (한국어)](ColorKitDemo_README_KR.md)** - ColorKit 데모 앱 사용 완전 가이드
+- **[🌏 Demo App Guide (English)](ColorKitDemo_README.md)** - 데모 가이드 영어 버전
 
 ## 🎯 다중 접근 패턴
 

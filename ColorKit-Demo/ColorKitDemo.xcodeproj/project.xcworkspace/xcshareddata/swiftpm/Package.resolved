@@ -1,0 +1,15 @@
+{
+  "originHash" : "952dd4b3b9ae181da8c1398c4048269adb1eed2a742553437d9263872fd2a998",
+  "pins" : [
+    {
+      "identity" : "colorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ParkSY0919/ColorKit.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3c5ee3a19adb2a8360051a20c16c5ca6b685f8b1"
+      }
+    }
+  ],
+  "version" : 3
+}

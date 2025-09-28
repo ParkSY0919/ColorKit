@@ -10,7 +10,7 @@
 
 **Key Feature**: ColorKit features a **DynamicColorProperty** system that provides multiple access patterns, automatic fallbacks for missing colors, and progressive enhancement - write your UI code before colors exist in JSON!
 
-[한국어 README](README_KR.md) | [English README](README.md)
+[한국어 README](README_KR.md) | [English README](README.md) | [📱 Demo Guide](ColorKitDemo_README.md)
 
 ---
 
@@ -182,6 +182,55 @@ Text("Design System")
     .foregroundColor(Colors["text-heading-large"]?.color ?? .primary)
     .background(Colors["background-surface-elevated"]?.color ?? .gray)
 ```
+
+## 📱 ColorKit Demo App
+
+Want to see ColorKit in action? Check out our **ColorKit Demo** app included in this repository! The demo showcases all ColorKit features with interactive examples and real-world use cases.
+
+### 🚀 Try the Demo
+
+The demo app is located in the `ColorKit-Demo/` folder and includes:
+
+- **📋 Interactive Examples**: See all access patterns in action
+- **🎨 Real-time Theme Switching**: Experience automatic light/dark mode
+- **🔧 Progressive Enhancement**: Watch fallback colors work seamlessly
+- **📊 Color Discovery**: Browse all available colors dynamically
+- **🎯 Best Practices**: Learn optimal usage patterns
+
+### 🏃‍♂️ Running the Demo
+
+1. **Open the Demo Project:**
+   ```bash
+   cd ColorKit-Demo
+   open ColorKitDemo.xcodeproj
+   ```
+
+2. **Install ColorKit Dependency:**
+   - The demo already includes ColorKit as a local package
+   - Just build and run!
+
+3. **Explore Features:**
+   - Navigate through different demo screens
+   - Switch between light/dark mode in device settings
+   - Try different color naming examples
+   - See fallback behavior with missing colors
+
+### 📚 Learning Resources
+
+The demo includes:
+- **Step-by-step tutorials** for each feature
+- **Code examples** you can copy to your project
+- **Interactive playground** to test color names
+- **Performance tips** and optimization guides
+
+Perfect for both newcomers learning ColorKit and experienced developers exploring advanced features!
+
+### 📖 Demo Documentation
+
+For detailed information about the demo app, including setup instructions, features overview, and code explanations, check out the dedicated demo documentation:
+
+- **[📱 Demo App Guide](ColorKitDemo_README.md)** - Complete guide to using the ColorKit Demo app
+- **[🌏 데모 앱 가이드 (한국어)](ColorKitDemo_README_KR.md)** - Korean version of the demo guide
 
 ## 🎯 Multiple Access Patterns
 

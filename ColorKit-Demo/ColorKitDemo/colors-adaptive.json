@@ -1,0 +1,86 @@
+{
+  "brand-primary": {
+    "light": "#007AFF",
+    "dark": "#0A84FF"
+  },
+  "brand-secondary": {
+    "light": "#5AC8FA",
+    "dark": "#64D2FF"
+  },
+  "brand-tertiary": {
+    "light": "#AF52DE",
+    "dark": "#BF5AF2"
+  },
+  "background-main": {
+    "light": "#FFFFFF",
+    "dark": "#000000"
+  },
+  "background-secondary": {
+    "light": "#F5F5F5",
+    "dark": "#1C1C1E"
+  },
+  "background-card": {
+    "light": "#FFFFFF",
+    "dark": "#1C1C1E"
+  },
+  "background-elevated": {
+    "light": "#FFFFFF",
+    "dark": "#2C2C2E"
+  },
+  "text-heading": {
+    "light": "#000000",
+    "dark": "#FFFFFF"
+  },
+  "text-body": {
+    "light": "#333333",
+    "dark": "#FFFFFF"
+  },
+  "text-caption": {
+    "light": "#666666",
+    "dark": "#98989D"
+  },
+  "text-inverse": {
+    "light": "#FFFFFF",
+    "dark": "#000000"
+  },
+  "state-success": {
+    "light": "#34C759",
+    "dark": "#30D158"
+  },
+  "state-warning": {
+    "light": "#FF9500",
+    "dark": "#FF9F0A"
+  },
+  "state-error": {
+    "light": "#FF3B30",
+    "dark": "#FF453A"
+  },
+  "state-info": {
+    "light": "#007AFF",
+    "dark": "#0A84FF"
+  },
+  "border-light": {
+    "light": "#E5E5EA",
+    "dark": "#2C2C2E"
+  },
+  "border-medium": {
+    "light": "#C6C6C8",
+    "dark": "#38383A"
+  },
+  "border-strong": {
+    "light": "#8E8E93",
+    "dark": "#636366"
+  },
+  "accent-primary": {
+    "light": "#007AFF",
+    "dark": "#0A84FF"
+  },
+  "accent-secondary": {
+    "light": "#5AC8FA",
+    "dark": "#64D2FF"
+  },
+  "shadow-color": {
+    "light": "#00000020",
+    "dark": "#00000040"
+  }
+}
