@@ -148,11 +148,11 @@ extension Colors {
             for (propertyName, _) in sortedColors {
                 if let originalKey = discoveryResult.propertyMappings[propertyName] {
                     code += """
-    /// \\(originalKey)
-    public static var \\(propertyName): DynamicColorProperty {
-        return DynamicColorProperty(propertyName: \"\\(propertyName)\")
+    /// \(originalKey)
+    public static var \(propertyName): DynamicColorProperty {
+        return DynamicColorProperty(propertyName: "\(propertyName)")
     }
-    
+
 """
                 }
             }
@@ -164,15 +164,15 @@ extension Colors {
 // MARK: - Available Colors Summary
 
 /*
-Total Colors: \\(discoveryResult.totalColorCount)
-Categories: \\(discoveryResult.categories.joined(separator: ", "))
+Total Colors: \(discoveryResult.totalColorCount)
+Categories: \(discoveryResult.categories.joined(separator: ", "))
 
 Property Mappings:
 """
         
         let sortedMappings = discoveryResult.propertyMappings.sorted { $0.key < $1.key }
         for (propName, jsonKey) in sortedMappings {
-            code += "• .\\(propName) → \"\\(jsonKey)\"\\n"
+            code += "• .\(propName) → \"\(jsonKey)\"\n"
         }
         
         code += """
@@ -208,7 +208,7 @@ extension ColorKit {
         }
         
         print("🎨 Generated Color Extensions:")
-        print("Copy the following code to update Colors+Generated.swift:\\n")
+        print("Copy the following code to update Colors+Generated.swift:\n")
         print(ColorExtensionGenerator.generateExtensions(from: discoveryResult))
     }
     
@@ -221,6 +221,6 @@ extension ColorKit {
         }
         
         try ColorExtensionGenerator.writeExtensions(from: discoveryResult, to: filePath)
-        print("✅ Generated extensions written to: \\(filePath)")
+        print("✅ Generated extensions written to: \(filePath)")
     }
 }
