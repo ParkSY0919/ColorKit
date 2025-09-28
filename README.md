@@ -10,7 +10,7 @@
 
 **Key Feature**: ColorKit features a **DynamicColorProperty** system that provides multiple access patterns, automatic fallbacks for missing colors, and progressive enhancement - write your UI code before colors exist in JSON!
 
-[한국어 README](README_KR.md) | [English README](README.md) | [📱 Demo Guide](ColorKitDemo_README.md)
+[한국어 README](README_KR.md) | [English README](README.md) | [📱 Demo Guide](Documentations/ColorKitDemo_README.md)
 
 ---
 
@@ -229,8 +229,8 @@ Perfect for both newcomers learning ColorKit and experienced developers explorin
 
 For detailed information about the demo app, including setup instructions, features overview, and code explanations, check out the dedicated demo documentation:
 
-- **[📱 Demo App Guide](ColorKitDemo_README.md)** - Complete guide to using the ColorKit Demo app
-- **[🌏 데모 앱 가이드 (한국어)](ColorKitDemo_README_KR.md)** - Korean version of the demo guide
+- **[📱 Demo App Guide](Documentations/ColorKitDemo_README.md)** - Complete guide to using the ColorKit Demo app
+- **[🌏 데모 앱 가이드 (한국어)](Documentations/ColorKitDemo_README_KR.md)** - Korean version of the demo guide
 
 ## 🎯 Multiple Access Patterns
 
@@ -1439,7 +1439,7 @@ xcodebuild test -scheme ColorKit
 
 ## 📄 License
 
-ColorKit is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+ColorKit is available under the MIT license. See the [LICENSE](Documentations/LICENSE) file for more info.
 
 ---
 

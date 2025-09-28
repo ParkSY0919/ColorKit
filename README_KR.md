@@ -10,7 +10,7 @@
 
 **핵심 기능**: ColorKit은 **DynamicColorProperty** 시스템을 특징으로 하여 다중 접근 패턴, 누락된 색상에 대한 자동 폴백, 점진적 향상을 제공합니다 - JSON에 색상이 존재하기 전에 UI 코드를 작성하세요!
 
-[한국어 README](README_KR.md) | [English README](README.md) | [📱 데모 가이드](ColorKitDemo_README_KR.md)
+[한국어 README](README_KR.md) | [English README](README.md) | [📱 데모 가이드](Documentations/ColorKitDemo_README_KR.md)
 
 ---
 
@@ -229,8 +229,8 @@ ColorKit을 처음 배우는 초보자부터 고급 기능을 탐구하는 숙�
 
 데모 앱에 대한 자세한 정보, 설정 방법, 기능 개요, 코드 설명은 전용 데모 문서를 확인하세요:
 
-- **[📱 데모 앱 가이드 (한국어)](ColorKitDemo_README_KR.md)** - ColorKit 데모 앱 사용 완전 가이드
-- **[🌏 Demo App Guide (English)](ColorKitDemo_README.md)** - 데모 가이드 영어 버전
+- **[📱 데모 앱 가이드 (한국어)](Documentations/ColorKitDemo_README_KR.md)** - ColorKit 데모 앱 사용 완전 가이드
+- **[🌏 Demo App Guide (English)](Documentations/ColorKitDemo_README.md)** - 데모 가이드 영어 버전
 
 ## 🎯 다중 접근 패턴
 
@@ -1046,7 +1046,7 @@ ColorKit.validateSetup()
 
 ## 📄 라이선스
 
-ColorKit은 MIT 라이선스 하에 제공됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+ColorKit은 MIT 라이선스 하에 제공됩니다. 자세한 내용은 [LICENSE](Documentations/LICENSE) 파일을 참조하세요.
 
 ---
 
