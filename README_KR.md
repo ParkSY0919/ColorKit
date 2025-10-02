@@ -37,7 +37,7 @@ Swift Package Manager로 프로젝트에 ColorKit 추가:
 
 1. **File > Add Package Dependencies** 선택
 2. 저장소 URL 입력: `https://github.com/ParkSY0919/ColorKit.git`
-3. **Up to Next Major Version** 선택 후 `0.1.0` 입력
+3. **Up to Next Major Version** 선택 후 `0.2.0` 입력
 4. **Add Package** 클릭
 5. **⚠️ 중요**: 패키지 구성요소를 타겟에 할당하라고 할 때:
 
@@ -50,20 +50,20 @@ Swift Package Manager로 프로젝트에 ColorKit 추가:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ParkSY0919/ColorKit.git", from: "0.1.0")
+    .package(url: "https://github.com/ParkSY0919/ColorKit.git", from: "0.2.0")
 ]
 ```
 
 #### CocoaPods 사용
 
 ```ruby
-pod 'ColorKit', '~> 0.1'
+pod 'ColorKit', '~> 0.2'
 ```
 
 #### Carthage 사용
 
 ```
-github "ParkSY0919/ColorKit" ~> 0.1
+github "ParkSY0919/ColorKit" ~> 0.2
 ```
 
 ### 2. 색상 JSON 파일 추가
