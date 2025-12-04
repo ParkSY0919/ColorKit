@@ -7,8 +7,8 @@ let package = Package(
     name: "ColorKit",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v14),
-        .macOS(.v11)
+        .iOS(.v13),
+        .macOS(.v10_15)
     ],
     products: [
         .library(

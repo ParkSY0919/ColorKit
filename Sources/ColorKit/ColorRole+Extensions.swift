@@ -38,25 +38,25 @@ extension UIColor {
 // MARK: - SwiftUI Color Extensions
 
 #if canImport(SwiftUI)
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 extension Color {
     /// Create SwiftUI Color from hex string
     public init?(hex: String) {
         let cleaned = hex.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "#", with: "")
-        
+
         var value: UInt64 = 0
         guard Scanner(string: cleaned).scanHexInt64(&value) else { return nil }
-        
+
         let hasAlpha = cleaned.count == 8
         let a = hasAlpha ? Double((value & 0xFF000000) >> 24) / 255 : 1
         let r = Double((value & 0xFF0000) >> 16) / 255
         let g = Double((value & 0x00FF00) >> 8) / 255
         let b = Double( value & 0x0000FF) / 255
-        
-        self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
+
+        self.init(red: r, green: g, blue: b, opacity: a)
     }
-    
+
     /// Create Color with light and dark variants
     public init(light: Color, dark: Color) {
         #if canImport(UIKit)
@@ -68,7 +68,7 @@ extension Color {
         self = light
         #endif
     }
-    
+
 }
 #endif
 
