@@ -377,20 +377,17 @@ ColorKit.enableAccessLogging = true
 // 모든 색상 접근 시도 로그
 ```
 
-### JSON 검증
+### 설정 검증
 
 ```swift
-if let result = ColorKit.validateJSON() {
-    switch result {
-    case .valid:
-        print("JSON 유효")
-    case .invalidFormat(let error):
-        print("형식 오류: \(error)")
-    case .missingFile:
-        print("파일 없음")
-    case .emptyFile:
-        print("파일 비어있음")
-    }
+// ColorKit 로드 성공 여부 확인
+ColorKit.validateSetup()
+
+// 또는 프로그래밍 방식으로 확인
+if ColorKit.isReady {
+    print("\(ColorKit.totalColorCount)개 색상 로드됨")
+} else {
+    print("에러: \(ColorKit.setupError ?? "알 수 없음")")
 }
 ```
 

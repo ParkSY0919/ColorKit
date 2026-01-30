@@ -9,10 +9,47 @@ import Foundation
 /// through configurable mappings to standard semantic color roles.
 public final class ColorKit {
     public static let shared = ColorKit()
-    
+
     private var colorProvider: ColorProvider?
     internal var dynamicProvider: DynamicColorProvider?
-    
+
+    // MARK: - Debug Settings
+
+    /// Enable/disable missing color warnings (default: true)
+    public static var enableMissingColorWarnings: Bool = true
+
+    /// Enable/disable access logging for debugging (default: false)
+    public static var enableAccessLogging: Bool = false
+
+    /// Set of color names that were requested but not found
+    private static var _missingColors: Set<String> = []
+
+    /// Get all requested but missing color names
+    public static var requestedMissingColors: [String] {
+        return Array(_missingColors).sorted()
+    }
+
+    /// Record a missing color (called internally)
+    internal static func recordMissingColor(_ name: String) {
+        _missingColors.insert(name)
+        if enableMissingColorWarnings {
+            print("⚠️ ColorKit: Color '\(name)' not found. Using fallback.")
+        }
+    }
+
+    /// Record color access (called internally)
+    internal static func logAccess(_ name: String, found: Bool) {
+        if enableAccessLogging {
+            let status = found ? "✓" : "✗"
+            print("🔍 ColorKit: [\(status)] Accessed '\(name)'")
+        }
+    }
+
+    /// Clear the missing colors record
+    public static func clearMissingColors() {
+        _missingColors.removeAll()
+    }
+
     private init() {}
     
     /// Configure ColorKit with simplified setup - just provide JSON file name
@@ -144,6 +181,19 @@ public final class ColorKit {
         return shared.colorProvider?.allColorThemes.count ?? 0
     }
     
+    /// Print all missing colors that were requested but not found
+    public static func printMissingColors() {
+        let missing = requestedMissingColors
+        if missing.isEmpty {
+            print("✅ ColorKit: No missing colors recorded.")
+        } else {
+            print("⚠️ ColorKit: \(missing.count) missing color(s):")
+            for name in missing {
+                print("   - \(name)")
+            }
+        }
+    }
+
     /// Print all available colors for debugging
     public static func printAllColors() {
         print("🎨 All Available Colors:")

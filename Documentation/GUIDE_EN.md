@@ -377,20 +377,17 @@ ColorKit.enableAccessLogging = true
 // Logs every color access attempt
 ```
 
-### Validate JSON
+### Validate Setup
 
 ```swift
-if let result = ColorKit.validateJSON() {
-    switch result {
-    case .valid:
-        print("JSON is valid")
-    case .invalidFormat(let error):
-        print("Format error: \(error)")
-    case .missingFile:
-        print("File not found")
-    case .emptyFile:
-        print("File is empty")
-    }
+// Check if ColorKit loaded successfully
+ColorKit.validateSetup()
+
+// Or check programmatically
+if ColorKit.isReady {
+    print("Loaded \(ColorKit.totalColorCount) colors")
+} else {
+    print("Error: \(ColorKit.setupError ?? "Unknown")")
 }
 ```
 

@@ -79,26 +79,24 @@ public struct Colors {
     @available(iOS 14.0, macOS 11.0, *)
     public static func swiftUIColor(named colorName: String) -> Color {
         guard let theme = color(named: colorName) else {
-            print("⚠️ ColorKit: Color '\(colorName)' not found. Using fallback.")
+            ColorKit.recordMissingColor(colorName)
             return Color.gray
         }
-        
         return theme.swiftUIColor
     }
     #endif
-    
+
     // MARK: - UIKit Color Extensions
-    
+
     #if canImport(UIKit)
     /// Get UIColor by name with automatic light/dark adaptation
     /// - Parameter colorName: Color name (JSON key or property name)
     /// - Returns: UIColor with fallback to gray if not found
     public static func uiColor(named colorName: String) -> UIColor {
         guard let theme = color(named: colorName) else {
-            print("⚠️ ColorKit: Color '\(colorName)' not found. Using fallback.")
+            ColorKit.recordMissingColor(colorName)
             return UIColor.systemGray
         }
-        
         return theme.uiColor
     }
     #endif
@@ -129,6 +127,58 @@ public struct Colors {
             colorName.lowercased().contains(lowercasedTerm)
         }
     }
+
+    // MARK: - Color Existence and Info
+
+    /// Check if a color exists
+    /// - Parameter colorName: Color name to check
+    /// - Returns: true if color exists
+    public static func hasColor(named colorName: String) -> Bool {
+        return color(named: colorName) != nil
+    }
+
+    /// Get detailed information about a color
+    /// - Parameter colorName: Color name
+    /// - Returns: ColorInfo if found
+    public static func colorInfo(for colorName: String) -> ColorInfo? {
+        guard let theme = color(named: colorName) else { return nil }
+
+        // Find the original JSON key
+        let jsonKey = ColorKit.shared.dynamicProvider?.discoveryResult?.propertyMappings
+            .first(where: { $0.key == colorName || $0.value == colorName })?
+            .value ?? colorName
+
+        return ColorInfo(
+            name: colorName,
+            jsonKey: jsonKey,
+            lightHex: theme.light,
+            darkHex: theme.dark
+        )
+    }
+
+    /// Get debug information about a color
+    /// - Parameter colorName: Color name
+    /// - Returns: Debug string
+    public static func debugInfo(for colorName: String) -> String {
+        if let info = colorInfo(for: colorName) {
+            return """
+            Color: \(info.name)
+            JSON Key: \(info.jsonKey)
+            Light: \(info.lightHex)
+            Dark: \(info.darkHex)
+            """
+        } else {
+            return "Color '\(colorName)' not found"
+        }
+    }
+}
+
+/// Color information structure
+public struct ColorInfo {
+    public let name: String
+    public let jsonKey: String
+    public let lightHex: String
+    public let darkHex: String
 }
 
 /// Helper struct for dynamic property access
@@ -160,18 +210,22 @@ public struct DynamicColorProperty {
     /// Get SwiftUI Color for this property
     @available(iOS 14.0, macOS 11.0, *)
     public var color: Color {
+        ColorKit.logAccess(propertyName, found: theme != nil)
         guard let theme = self.theme else {
-            print("⚠️ ColorKit: Color '\(propertyName)' not found. Using fallback.")
+            ColorKit.recordMissingColor(propertyName)
             return Color.gray
         }
-        
         return theme.swiftUIColor
     }
     #endif
-    
+
     #if canImport(UIKit)
     /// Get UIColor for this property
     public var uiColor: UIColor {
+        ColorKit.logAccess(propertyName, found: theme != nil)
+        if theme == nil {
+            ColorKit.recordMissingColor(propertyName)
+        }
         return Colors.uiColor(named: propertyName)
     }
     #endif
