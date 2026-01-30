@@ -362,12 +362,35 @@ textHeading: #1D1D1F → #FFFFFF
 ### 누락된 색상 확인
 
 ```swift
-// 경고 활성화
+// 경고 활성화/비활성화 (기본: true)
 ColorKit.enableMissingColorWarnings = true
 
 // 누락된 색상 목록
 let missing = ColorKit.requestedMissingColors
-print("누락: \(missing)")
+
+// 누락된 색상 출력
+ColorKit.printMissingColors()
+
+// 기록 초기화
+ColorKit.clearMissingColors()
+```
+
+### 색상 존재 및 정보 확인
+
+```swift
+// 색상 존재 여부
+if Colors.hasColor(named: "brandPrimary") {
+    print("색상 존재")
+}
+
+// 색상 정보 조회
+if let info = Colors.colorInfo(for: "brandPrimary") {
+    print("Light: \(info.lightHex)")  // #007AFF
+    print("Dark: \(info.darkHex)")    // #0A84FF
+}
+
+// 디버그 문자열
+print(Colors.debugInfo(for: "brandPrimary"))
 ```
 
 ### 접근 로깅

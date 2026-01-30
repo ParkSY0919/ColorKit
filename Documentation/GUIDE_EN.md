@@ -362,12 +362,35 @@ textHeading: #1D1D1F → #FFFFFF
 ### Check Missing Colors
 
 ```swift
-// Enable warnings
+// Enable/disable warnings (default: true)
 ColorKit.enableMissingColorWarnings = true
 
 // Get list of missing colors
 let missing = ColorKit.requestedMissingColors
-print("Missing: \(missing)")
+
+// Print all missing colors
+ColorKit.printMissingColors()
+
+// Clear the record
+ColorKit.clearMissingColors()
+```
+
+### Color Existence and Info
+
+```swift
+// Check if color exists
+if Colors.hasColor(named: "brandPrimary") {
+    print("Color exists")
+}
+
+// Get color info
+if let info = Colors.colorInfo(for: "brandPrimary") {
+    print("Light: \(info.lightHex)")  // #007AFF
+    print("Dark: \(info.darkHex)")    // #0A84FF
+}
+
+// Get debug string
+print(Colors.debugInfo(for: "brandPrimary"))
 ```
 
 ### Access Logging
