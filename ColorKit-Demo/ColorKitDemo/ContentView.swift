@@ -173,6 +173,9 @@ struct SingleColorTestView: View {
             .padding()
         }
         .background(Colors.backgroundMain.color)
+        .onAppear {
+            ColorKit.configure(jsonFileName: "colors")
+        }
     }
 }
 
