@@ -227,6 +227,9 @@ struct CodeGenerationTestView: View {
             .padding()
         }
         .background(Colors["background-main"]?.swiftUIColor ?? Color.white)
+        .onAppear {
+            ColorKit.configure(jsonFileName: currentJsonFile)
+        }
     }
 }
 
