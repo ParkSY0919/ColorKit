@@ -7,7 +7,7 @@
 
 [한국어](Documentation/README_KR.md)
 
-JSON design tokens to Swift colors. Zero configuration required.
+JSON design tokens to Swift colors. Zero configuration required. with Claude Code
 
 ## Features
 
